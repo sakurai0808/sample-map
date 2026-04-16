@@ -1,6 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic"; // ブラウザでしか動かないLeafletのために必要
+import dynamic from "next/dynamic"; // ブラウザでしか動かないLeafletのために必要。サーバーでは無視し、ブラウザに届いてから読み込む
 
 // SSで読み込まず、CSだけで読み込む
 const Map = dynamic(() => import("./components/Map"), {
