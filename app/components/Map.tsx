@@ -20,28 +20,28 @@ const markerIcon = new L.Icon({
 const points = [
   {
     id: 1,
-    name: "東京駅 丸の内口",
-    pos: [35.6812, 139.7671] as [number, number],
+    name: "パークハイアット東京",
+    pos: [35.6862, 139.6904] as [number, number],
   },
   {
     id: 2,
-    name: "青山一丁目交差点",
-    pos: [35.6725, 139.7238] as [number, number],
+    name: "キャピトルホテル東急",
+    pos: [35.6739, 139.7407] as [number, number],
   },
   {
     id: 3,
-    name: "霞が関出口",
-    pos: [35.675, 139.7525] as [number, number],
+    name: "渋谷エクセルホテル東急",
+    pos: [35.6585, 139.6998] as [number, number],
   },
   {
     id: 4,
-    name: "銀座四丁目",
-    pos: [35.6719, 139.7648] as [number, number],
+    name: "グランドハイアット東京",
+    pos: [35.66, 139.7283] as [number, number],
   },
   {
     id: 5,
-    name: "西新橋交差点",
-    pos: [35.6672, 139.7542] as [number, number],
+    name: "東京プリンスホテル",
+    pos: [35.6589, 139.7481] as [number, number],
   },
 ];
 
