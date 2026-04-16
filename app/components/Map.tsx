@@ -7,6 +7,10 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
 
+// FontAwesomeの読み込み
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouse } from "@fortawesome/free-solid-svg-icons";
+
 // ピンのアイコンが消える問題の対策(CDNから画像を直接読み込む)
 const markerIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -21,6 +25,7 @@ const markerIcon = new L.Icon({
 const createCustomIcon = (name: string) => {
   return L.divIcon({
     html: renderToStaticMarkup(
+      //JSXをHTML文字列に変換
       <div
         style={{
           display: "flex",
@@ -34,21 +39,17 @@ const createCustomIcon = (name: string) => {
             width: "40px",
             height: "40px",
             borderRadius: "50%",
-            backgroundColor: "#fff",
-            border: "2px solid #ff4e50",
-            overflow: "hidden",
+            backgroundColor: "#a0d8ef",
+            border: "2px solid white",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
+            color: "white",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
           }}
         >
           {/* 施設のロゴ画像が入る */}
-          <span
-            style={{ fontSize: "20px", fontWeight: "bold", color: "#ff4e50" }}
-          >
-            H
-          </span>
+          <FontAwesomeIcon icon={faHouse} />
         </div>
         {/* ラベル名 */}
         <div
@@ -78,27 +79,27 @@ const points = [
   {
     id: 1,
     name: "パークハイアット東京",
-    pos: [35.6862, 139.6904] as [number, number],
+    pos: [35.68618692982386, 139.69047206623225] as [number, number],
   },
   {
     id: 2,
     name: "キャピトルホテル東急",
-    pos: [35.6739, 139.7407] as [number, number],
+    pos: [35.673960049945066, 139.74077728841004] as [number, number],
   },
   {
     id: 3,
     name: "渋谷エクセルホテル東急",
-    pos: [35.6585, 139.6998] as [number, number],
+    pos: [35.65858274942378, 139.69983037224398] as [number, number],
   },
   {
     id: 4,
     name: "グランドハイアット東京",
-    pos: [35.66, 139.7283] as [number, number],
+    pos: [35.660077672488136, 139.72831006623068] as [number, number],
   },
   {
     id: 5,
     name: "東京プリンスホテル",
-    pos: [35.6589, 139.7481] as [number, number],
+    pos: [35.65894453810081, 139.74811763739464] as [number, number],
   },
 ];
 

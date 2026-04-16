@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* デフォルトのマーカーの背景が残らないようにする */
+/* デフォルトでつくマーカーの背景を消す*/
 .custom-div-icon {
   background: none;
   border: none;
