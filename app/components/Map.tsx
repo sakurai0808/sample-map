@@ -5,8 +5,9 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { renderToStaticMarkup } from "react-dom/server";
 
-// アイコンが消える問題の対策(CDNから画像を直接読み込む)
+// ピンのアイコンが消える問題の対策(CDNから画像を直接読み込む)
 const markerIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   iconRetinaUrl:
@@ -15,6 +16,62 @@ const markerIcon = new L.Icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
+
+// カスタムアイコンを作成する関数
+const createCustomIcon = (name: string) => {
+  return L.divIcon({
+    html: renderToStaticMarkup(
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {/* アイコン */}
+        <div
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            backgroundColor: "#fff",
+            border: "2px solid #ff4e50",
+            overflow: "hidden",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
+          }}
+        >
+          {/* 施設のロゴ画像が入る */}
+          <span
+            style={{ fontSize: "20px", fontWeight: "bold", color: "#ff4e50" }}
+          >
+            H
+          </span>
+        </div>
+        {/* ラベル名 */}
+        <div
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            padding: "2px 8px",
+            borderRadius: "12px",
+            fontSize: "12px",
+            fontWeight: "bold",
+            whiteSpace: "nowrap",
+            marginTop: "4px",
+            border: "1px solid #ccc",
+          }}
+        >
+          {name}
+        </div>
+      </div>,
+    ),
+    className: "custom-div-icon",
+    iconSize: [0, 0],
+    iconAnchor: [20, 20], // アイコンの中身を座標に合わせる
+  });
+};
 
 // 表示させる地点
 const points = [
@@ -59,7 +116,11 @@ export default function Map() {
         url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" // voyager
       />
       {points.map((point) => (
-        <Marker key={point.id} position={point.pos} icon={markerIcon}>
+        <Marker
+          key={point.id}
+          position={point.pos}
+          icon={createCustomIcon(point.name)}
+        >
           <Popup>{point.name}</Popup>
         </Marker>
       ))}
