@@ -139,6 +139,55 @@ export default function Map() {
             <div>
               <p style={{ fontWeight: "bold" }}>{point.name}</p>
               <p>{point.description}</p>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                  marginTop: "12px",
+                }}
+              >
+                {/* Googleマップボタン */}
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${point.pos[0]},${point.pos[1]}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#4285F4",
+                    color: "white",
+                    textAlign: "center",
+                    padding: "8px",
+                    borderRadius: "4px",
+                    textDecoration: "none",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  GoogleMapで確認
+                </a>
+
+                {/* 記事リンクボタン */}
+                <a
+                  href={point.articleUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "block",
+                    backgroundColor: "#34A853",
+                    color: "white",
+                    textAlign: "center",
+                    padding: "8px",
+                    borderRadius: "4px",
+                    textDecoration: "none",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  解説記事を見る
+                </a>
+              </div>
             </div>
           </Popup>
         </Marker>
