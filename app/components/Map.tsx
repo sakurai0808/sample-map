@@ -137,7 +137,14 @@ export default function Map() {
         >
           <Popup>
             <div>
-              <p style={{ fontWeight: "bold" }}>{point.name}</p>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                }}
+              >
+                {point.name}
+              </p>
               <p>{point.description}</p>
 
               <div
