@@ -130,7 +130,12 @@ export default function Map() {
           position={point.pos}
           icon={createCustomIcon(point.name)}
         >
-          <Popup>{point.name}</Popup>
+          <Popup>
+            <div>
+              <p>{point.name}</p>
+              <p>{point.description}</p>
+            </div>
+          </Popup>
         </Marker>
       ))}
     </MapContainer>
