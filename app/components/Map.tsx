@@ -25,8 +25,18 @@ const markerIcon = new L.Icon({
   iconAnchor: [12, 41],
 });
 
+// カテゴリごとに見た目を設定する
+const category_config: { [key: string]: { color: string; icon: any } } = {
+  facility: { color: "#ffd700", icon: faHouse },
+  secretpath: { color: "#a0d8ef", icon: faRoute },
+  default: { color: "#4285F4", icon: faLocationDot },
+};
+
 // カスタムアイコンを作成する関数
-const createCustomIcon = (name: string) => {
+const createCustomIcon = (name: string, category: string) => {
+  // カテゴリごとの設定を取得する(該当がない場合はdefaultにする)
+  const config = category_config[category] || category_config.default;
+
   return L.divIcon({
     html: renderToStaticMarkup(
       //JSXをHTML文字列に変換
@@ -43,7 +53,7 @@ const createCustomIcon = (name: string) => {
             width: "40px",
             height: "40px",
             borderRadius: "50%",
-            backgroundColor: "#a0d8ef",
+            backgroundColor: config.color,
             border: "2px solid white",
             display: "flex",
             justifyContent: "center",
@@ -53,7 +63,7 @@ const createCustomIcon = (name: string) => {
           }}
         >
           {/* 施設のロゴ画像が入る */}
-          <FontAwesomeIcon icon={faHouse} />
+          <FontAwesomeIcon icon={config.icon} />
         </div>
         {/* ラベル名 */}
         <div
@@ -133,13 +143,6 @@ const points = [
   },
 ];
 
-// カテゴリごとに見た目を設定する
-const category_config: { [key: string]: { color: string; icon: any } } = {
-  facility: { color: "ffd700", icon: faHouse },
-  secretpath: { color: "a0d8ef", icon: faRoute },
-  default: { color: "#4285F4", icon: faMapMarkerAlt },
-};
-
 export default function Map() {
   return (
     <MapContainer
@@ -157,7 +160,7 @@ export default function Map() {
         <Marker
           key={point.id}
           position={point.pos}
-          icon={createCustomIcon(point.name)}
+          icon={createCustomIcon(point.name, point.category)}
         >
           <Popup>
             <div>
