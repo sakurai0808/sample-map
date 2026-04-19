@@ -9,9 +9,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 // FontAwesomeの読み込み
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHouse,
+  faRoute,
+  faLocationDot,
+} from "@fortawesome/free-solid-svg-icons";
 
-// ピンのアイコンが消える問題の対策(CDNから画像を直接読み込む)
+// ※毛必要なし? ピンのアイコンが消える問題の対策(CDNから画像を直接読み込む)
 const markerIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   iconRetinaUrl:
@@ -87,6 +91,7 @@ const points = [
     id: 2,
     name: "キャピトルホテル東急",
     pos: [35.673960049945066, 139.74077728841004] as [number, number],
+    category: "facility",
     description: "車寄せへの入口は2つあります。両方とも右折で進入可能です。",
     articleUrl: "https://tokyotaximap.com/the-capitol-hotel-tokyu/",
   },
@@ -94,6 +99,7 @@ const points = [
     id: 3,
     name: "渋谷エクセルホテル東急",
     pos: [35.65858274942378, 139.69983037224398] as [number, number],
+    category: "facility",
     description:
       "ホテル車寄せへの入口は「道玄坂上交番前」交差点にあります。全方向から進行可能です。",
     articleUrl: "https://tokyotaximap.com/shibuya-excelhoteltokyu/",
@@ -102,6 +108,7 @@ const points = [
     id: 4,
     name: "グランドハイアット東京",
     pos: [35.660077672488136, 139.72831006623068] as [number, number],
+    category: "facility",
     description:
       "車寄せへの入口はテレ朝通り沿いにあります。右折で進入可能です。",
     articleUrl: "https://tokyotaximap.com/grandhyatt-tokyo/",
@@ -110,11 +117,28 @@ const points = [
     id: 5,
     name: "東京プリンスホテル",
     pos: [35.65894453810081, 139.74811763739464] as [number, number],
+    category: "facility",
     description:
       "車寄せへの入口は「芝公園3丁目」交差点にあります。全方向から進行可能です。",
     articleUrl: "",
   },
+  {
+    id: 6,
+    name: "西麻布~根津美術館",
+    pos: [35.662618299028466, 139.71722704319342] as [number, number],
+    category: "secretpath",
+    description:
+      "西麻布と根津美術館を結ぶ抜け道です。多少のルートの違いはありますが、両方向に進行可能です。",
+    articleUrl: "https://tokyotaximap.com/nishiazabu-to-nezumuseum/",
+  },
 ];
+
+// カテゴリごとに見た目を設定する
+const category_config: { [key: string]: { color: string; icon: any } } = {
+  facility: { color: "ffd700", icon: faHouse },
+  secretpath: { color: "a0d8ef", icon: faRoute },
+  default: { color: "#4285F4", icon: faMapMarkerAlt },
+};
 
 export default function Map() {
   return (
