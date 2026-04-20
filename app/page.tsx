@@ -17,7 +17,7 @@ export default function Home() {
     <main style={{ padding: "20px" }}>
       <h1>タクシー運転手向けマップ(テスト)</h1>
       <div style={{ marginTop: "20px", border: "1px solid #ccc" }}>
-        <Map />
+        <Map /> {/* 地図のコンポーネント */}
       </div>
     </main>
   );
