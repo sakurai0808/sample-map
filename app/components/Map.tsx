@@ -2,7 +2,8 @@
 
 "use client"; // ブラウザのみで動かす
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -97,7 +98,7 @@ const createCustomIcon = (name: string, category: string) => {
   });
 };
 
-// 表示させる地点
+// 表示させる地点リスト
 const points = [
   // カテゴリ: 施設
   {
@@ -277,7 +278,17 @@ const points = [
   },
 ];
 
+// 地図を動かすためのサブのコンポーネント
+function ChangeView({ center }: { center: [number, number] }) {
+  const map = useMap();
+  map.setView(center, 15, { animate: true }); // 指定した座標へ移動する
+  return null;
+}
+
 export default function Map() {
+  // 「現在選択されている地点」をuseStateで管理する
+  const [selectedPoint, setSelectedPoint] = useState<any>(null);
+
   return (
     <div style={{ display: "flex", height: "100vh", width: "100%" }}>
       {/* コンテンツを一覧表示するサイドバー */}
@@ -295,14 +306,11 @@ export default function Map() {
           {points.map((point) => (
             <div
               key={point.id}
+              onClick={() => setSelectedPoint(point)} // クリックでstateを変化
               style={{
                 padding: "12px",
                 backgroundColor: "#fff",
                 cursor: "pointer",
-              }}
-              onClick={() => {
-                // ここにクリックで地図を移動させる処理を後で足せます
-                console.log(point.name + "へ移動");
               }}
             >
               <div style={{ fontSize: "0.9rem", fontWeight: "bold" }}>
@@ -317,6 +325,7 @@ export default function Map() {
           ))}
         </div>
       </div>
+
       {/* 地図 */}
       <MapContainer
         center={[35.6812, 139.7671]}
@@ -327,11 +336,21 @@ export default function Map() {
           attribution='&copy; <a href="https://www.carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" // ベースマップ「voyager」
         />
+
+        {/* 地点を選択した場合、ズームして移動させる */}
+        {selectedPoint && <ChangeView center={selectedPoint.pos} />}
+
         {points.map((point) => (
           <Marker
             key={point.id}
             position={point.pos}
             icon={createCustomIcon(point.name, point.category)}
+            // eventHandlersを使い、リストから選ばれた場合にポップアップを表示
+            ref={(ref) => {
+              if (selectedPoint?.id === point.id && ref) {
+                ref.openPopup();
+              }
+            }}
           >
             <Popup>
               <div>
