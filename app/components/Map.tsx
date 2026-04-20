@@ -279,87 +279,123 @@ const points = [
 
 export default function Map() {
   return (
-    <MapContainer
-      center={[35.6812, 139.7671]}
-      zoom={13}
-      style={{ height: "600px", width: "100%" }} // *高さを指定すること!
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.carto.com/attributions">CARTO</a>'
-        // url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" // positron
-        // url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" // dark matter
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" // voyager
-      />
-      {points.map((point) => (
-        <Marker
-          key={point.id}
-          position={point.pos}
-          icon={createCustomIcon(point.name, point.category)}
-        >
-          <Popup>
-            <div>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                }}
-              >
+    <div style={{ display: "flex", height: "100vh", width: "100%" }}>
+      {/* コンテンツを一覧表示するサイドバー */}
+      <div
+        style={{
+          width: "400px",
+          height: "100%",
+          overflowY: "auto",
+          backgroundColor: "#f8f9fa", //変更?
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div>
+          {points.map((point) => (
+            <div
+              key={point.id}
+              style={{
+                padding: "12px",
+                backgroundColor: "#fff",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                // ここにクリックで地図を移動させる処理を後で足せます
+                console.log(point.name + "へ移動");
+              }}
+            >
+              <div style={{ fontSize: "0.9rem", fontWeight: "bold" }}>
                 {point.name}
-              </p>
-              <p>{point.description}</p>
-
+              </div>
               <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "8px",
-                  marginTop: "12px",
-                }}
+                style={{ fontSize: "0.75rem", color: "#888", marginTop: "4px" }}
               >
-                {/* Googleマップボタン */}
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${point.pos[0]},${point.pos[1]}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: "block",
-                    backgroundColor: "#4285F4",
-                    color: "white",
-                    textAlign: "center",
-                    padding: "8px",
-                    borderRadius: "4px",
-                    textDecoration: "none",
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  GoogleMapで確認
-                </a>
-
-                {/* 記事リンクボタン */}
-                <a
-                  href={point.articleUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: "block",
-                    backgroundColor: "#34A853",
-                    color: "white",
-                    textAlign: "center",
-                    padding: "8px",
-                    borderRadius: "4px",
-                    textDecoration: "none",
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  解説記事を見る
-                </a>
+                {point.description.substring(0, 30)}...
               </div>
             </div>
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+          ))}
+        </div>
+      </div>
+      {/* 地図 */}
+      <MapContainer
+        center={[35.6812, 139.7671]}
+        zoom={13}
+        style={{ height: "100vh", width: "100%" }} // *高さを指定すること!
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" // ベースマップ「voyager」
+        />
+        {points.map((point) => (
+          <Marker
+            key={point.id}
+            position={point.pos}
+            icon={createCustomIcon(point.name, point.category)}
+          >
+            <Popup>
+              <div>
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                  }}
+                >
+                  {point.name}
+                </p>
+                <p>{point.description}</p>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                    marginTop: "12px",
+                  }}
+                >
+                  {/* Googleマップボタン */}
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${point.pos[0]},${point.pos[1]}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "block",
+                      backgroundColor: "#4285F4",
+                      color: "white",
+                      textAlign: "center",
+                      padding: "8px",
+                      borderRadius: "4px",
+                      textDecoration: "none",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    GoogleMapで確認
+                  </a>
+                  {/* 記事リンクボタン */}
+                  <a
+                    href={point.articleUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "block",
+                      backgroundColor: "#34A853",
+                      color: "white",
+                      textAlign: "center",
+                      padding: "8px",
+                      borderRadius: "4px",
+                      textDecoration: "none",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    解説記事を見る
+                  </a>
+                </div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   );
 }
