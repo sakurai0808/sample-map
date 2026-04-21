@@ -282,7 +282,7 @@ const points = [
 function ChangeView({ center }: { center: [number, number] }) {
   const map = useMap();
   map.setView(center, 15, { animate: true }); // 指定した座標へ移動する
-  return null;
+  return null; // 何らかの描画は不必要
 }
 
 export default function Map() {
@@ -311,6 +311,7 @@ export default function Map() {
                 padding: "12px",
                 backgroundColor: "#fff",
                 cursor: "pointer",
+                borderBottom: "solid 1px rgba(0, 0, 0, 0.2)",
               }}
             >
               <div style={{ fontSize: "0.9rem", fontWeight: "bold" }}>
@@ -347,8 +348,9 @@ export default function Map() {
             icon={createCustomIcon(point.name, point.category)}
             // eventHandlersを使い、リストから選ばれた場合にポップアップを表示
             ref={(ref) => {
+              // refには、Leafletのマーカーオブジェクトそのものが入る
               if (selectedPoint?.id === point.id && ref) {
-                ref.openPopup();
+                ref.openPopup(); // openPopupはピンのメソッド
               }
             }}
           >
