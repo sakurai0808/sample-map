@@ -21,16 +21,6 @@ import {
 // データのインポート
 import { points } from "./points";
 
-// ※毛必要なし? ピンのアイコンが消える問題の対策(CDNから画像を直接読み込む)
-const markerIcon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
-
 // カテゴリごとに見た目を設定する(辞書型で定義する)
 const category_config: {
   [key: string]: { label: string; color: string; icon: any };
