@@ -29,17 +29,19 @@ const markerIcon = new L.Icon({
 });
 
 // カテゴリごとに見た目を設定する(辞書型で定義する)
-const category_config: { [key: string]: { color: string; icon: any } } = {
+const category_config: {
+  [key: string]: { label: string; color: string; icon: any };
+} = {
   // 施設
-  facility: { color: "#ffd700", icon: faHouse },
+  facility: { label: "施設", color: "#ffd700", icon: faHouse },
   // 抜け道・定番ルート
-  secretpath: { color: "#a0d8ef", icon: faRoute },
+  secretpath: { label: "抜け道・定番ルート", color: "#a0d8ef", icon: faRoute },
   // 知名度の高い道
-  famousStreets: { color: "#ff7f50", icon: faRoad },
+  famousStreets: { label: "知名度の高い道", color: "#ff7f50", icon: faRoad },
   // 首都高
-  shutoko: { color: "#1F8435", icon: faTruckFast },
-  // デフォルト
-  default: { color: "#4285F4", icon: faLocationDot },
+  shutoko: { label: "首都高", color: "#1F8435", icon: faTruckFast },
+  // カテゴリなし
+  default: { label: "カテゴリなし", color: "#4285F4", icon: faLocationDot },
 };
 
 // カスタムアイコンを作成する関数
@@ -286,12 +288,19 @@ function ChangeView({ center }: { center: [number, number] }) {
 }
 
 export default function Map() {
+  // 「現在選択されているカテゴリ」を管理する
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   // 「現在選択されている地点」をuseStateで管理する
   const [selectedPoint, setSelectedPoint] = useState<any>(null);
 
+  // フィルタリングされた地点データを作成する
+  const filteredPoints = activeCategory
+    ? points.filter((p) => p.category === activeCategory)
+    : points;
+
   return (
     <div style={{ display: "flex", height: "100vh", width: "100%" }}>
-      {/* コンテンツを一覧表示するサイドバー */}
+      {/* フィルターボタン、コンテンツを一覧表示するサイドバー */}
       <div
         style={{
           width: "400px",
@@ -302,8 +311,57 @@ export default function Map() {
           flexDirection: "column",
         }}
       >
+        {/* フィルターボタンのエリア */}
         <div>
-          {points.map((point) => (
+          <p>カテゴリ検索</p>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "1em",
+            }}
+          >
+            {/* 「すべて」ボタン */}
+            <button
+              onClick={() => setActiveCategory(null)}
+              style={{
+                padding: "4px 12px",
+                borderRadius: "16px",
+                fontSize: "12px",
+                cursor: "pointer",
+                border: "1px solid #ccc",
+              }}
+            >
+              すべて
+            </button>
+            {/* カテゴリごとのボタン */}
+            {Object.keys(category_config)
+              .filter((key) => key !== "default") // デフォルトはボタンから除外
+              .map(
+                (
+                  cat, //「cat」は配列から取り出すそれぞれを示す
+                ) => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    style={{
+                      padding: "4px 12px",
+                      borderRadius: "16px",
+                      fontSize: "12px",
+                      cursor: "pointer",
+                      border: "1px solid #ccc",
+                    }}
+                  >
+                    {category_config[cat].label}
+                  </button>
+                ),
+              )}
+          </div>
+        </div>
+
+        {/* リスト表示 */}
+        <div>
+          {filteredPoints.map((point) => (
             <div
               key={point.id}
               onClick={() => setSelectedPoint(point)} // クリックでstateを変化
@@ -341,7 +399,7 @@ export default function Map() {
         {/* 地点を選択した場合、ズームして移動させる */}
         {selectedPoint && <ChangeView center={selectedPoint.pos} />}
 
-        {points.map((point) => (
+        {filteredPoints.map((point) => (
           <Marker
             key={point.id}
             position={point.pos}
@@ -356,14 +414,14 @@ export default function Map() {
           >
             <Popup>
               <div>
-                <p
+                <strong
                   style={{
                     fontWeight: "bold",
                     fontSize: "1rem",
                   }}
                 >
                   {point.name}
-                </p>
+                </strong>
                 <p>{point.description}</p>
                 <div
                   style={{
