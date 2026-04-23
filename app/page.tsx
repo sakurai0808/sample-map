@@ -6,7 +6,7 @@ import dynamic from "next/dynamic"; // ブラウザでしか動かないLeaflet�
 const Map = dynamic(() => import("./components/Map"), {
   ssr: false,
   loading: () => (
-    <div style={{ height: "600px", background: "#eee" }}>
+    <div className="flex h-[600px] items-center justify-center bg-gray-200 text-gray-600">
       地図を読み込んでいます...
     </div>
   ),
@@ -14,9 +14,9 @@ const Map = dynamic(() => import("./components/Map"), {
 
 export default function Home() {
   return (
-    <main style={{ padding: "20px" }}>
+    <main className="p-5">
       <h1>タクシー運転手向けマップ(テスト)</h1>
-      <div style={{ marginTop: "20px", border: "1px solid #ccc" }}>
+      <div className="mt-5 border border-gray-300">
         <Map /> {/* 地図のコンポーネント */}
       </div>
     </main>

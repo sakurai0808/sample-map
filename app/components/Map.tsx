@@ -3,6 +3,7 @@
 "use client"; // ブラウザのみで動かす
 
 import { useState } from "react";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -21,21 +22,45 @@ import {
 // データのインポート
 import { points } from "./points";
 
+type MapPoint = (typeof points)[number];
+
 // カテゴリごとに見た目を設定する(辞書型で定義する)
 const category_config: {
-  [key: string]: { label: string; color: string; icon: any };
+  [key: string]: { label: string; icon: IconDefinition; pinBgClass: string };
 } = {
   // 施設
-  facility: { label: "施設", color: "#ffd700", icon: faHouse },
+  facility: { label: "施設", icon: faHouse, pinBgClass: "bg-[#ffd700]" },
   // 抜け道・定番ルート
-  secretpath: { label: "抜け道・定番ルート", color: "#a0d8ef", icon: faRoute },
+  secretpath: {
+    label: "抜け道・定番ルート",
+    icon: faRoute,
+    pinBgClass: "bg-[#a0d8ef]",
+  },
   // 知名度の高い道
-  famousStreets: { label: "知名度の高い道", color: "#ff7f50", icon: faRoad },
+  famousStreets: {
+    label: "知名度の高い道",
+    icon: faRoad,
+    pinBgClass: "bg-[#ff7f50]",
+  },
   // 首都高
-  shutoko: { label: "首都高", color: "#1F8435", icon: faTruckFast },
+  shutoko: { label: "首都高", icon: faTruckFast, pinBgClass: "bg-[#1F8435]" },
   // カテゴリなし
-  default: { label: "カテゴリなし", color: "#4285F4", icon: faLocationDot },
+  default: {
+    label: "カテゴリなし",
+    icon: faLocationDot,
+    pinBgClass: "bg-[#4285F4]",
+  },
 };
+
+// 共通スタイルのまとめ
+const filterButtonClass =
+  "cursor-pointer rounded-2xl border border-gray-300 px-3 py-1 text-xs";
+
+const popupLinkPrimaryClass =
+  "block w-full rounded bg-[#4285F4] py-2 text-center text-xs font-bold text-white no-underline";
+
+const popupLinkSecondaryClass =
+  "block w-full rounded bg-[#34A853] py-2 text-center text-xs font-bold text-white no-underline";
 
 // カスタムアイコンを作成する関数
 const createCustomIcon = (name: string, category: string) => {
@@ -45,44 +70,16 @@ const createCustomIcon = (name: string, category: string) => {
   return L.divIcon({
     html: renderToStaticMarkup(
       //JSXをHTML文字列に変換
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
+      <div className="flex flex-col items-center">
         {/* アイコン */}
         <div
-          style={{
-            width: "40px",
-            height: "40px",
-            borderRadius: "50%",
-            backgroundColor: config.color,
-            border: "2px solid white",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "white",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
-          }}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-white text-white shadow-md ${config.pinBgClass}`}
         >
           {/* 施設のロゴ画像が入る */}
           <FontAwesomeIcon icon={config.icon} />
         </div>
         {/* ラベル名 */}
-        <div
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.9)",
-            padding: "2px 8px",
-            borderRadius: "12px",
-            fontSize: "12px",
-            fontWeight: "bold",
-            whiteSpace: "nowrap",
-            marginTop: "4px",
-            border: "1px solid #ccc",
-          }}
-        >
+        <div className="mt-1 whitespace-nowrap rounded-xl border border-gray-300 bg-white/90 px-2 py-0.5 text-xs font-bold">
           {name}
         </div>
       </div>,
@@ -104,7 +101,7 @@ export default function Map() {
   // 「現在選択されているカテゴリ」を管理する
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   // 「現在選択されている地点」をuseStateで管理する
-  const [selectedPoint, setSelectedPoint] = useState<any>(null);
+  const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null);
 
   // フィルタリングされた地点データを作成する
   const filteredPoints = activeCategory
@@ -112,38 +109,18 @@ export default function Map() {
     : points;
 
   return (
-    <div style={{ display: "flex", height: "100vh", width: "100%" }}>
+    <div className="flex h-screen w-full">
       {/* フィルターボタン、コンテンツを一覧表示するサイドバー */}
-      <div
-        style={{
-          width: "400px",
-          height: "100%",
-          overflowY: "auto",
-          backgroundColor: "#f8f9fa", //変更?
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <div className="flex h-full w-[400px] shrink-0 flex-col overflow-y-auto bg-gray-50">
         {/* フィルターボタンのエリア */}
         <div>
           <p>カテゴリ検索</p>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "1em",
-            }}
-          >
+          <div className="flex flex-wrap gap-4">
             {/* 「すべて」ボタン */}
             <button
+              type="button"
               onClick={() => setActiveCategory(null)}
-              style={{
-                padding: "4px 12px",
-                borderRadius: "16px",
-                fontSize: "12px",
-                cursor: "pointer",
-                border: "1px solid #ccc",
-              }}
+              className={filterButtonClass}
             >
               すべて
             </button>
@@ -155,15 +132,10 @@ export default function Map() {
                   cat, //「cat」は配列から取り出すそれぞれを示す
                 ) => (
                   <button
+                    type="button"
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    style={{
-                      padding: "4px 12px",
-                      borderRadius: "16px",
-                      fontSize: "12px",
-                      cursor: "pointer",
-                      border: "1px solid #ccc",
-                    }}
+                    className={filterButtonClass}
                   >
                     {category_config[cat].label}
                   </button>
@@ -178,19 +150,10 @@ export default function Map() {
             <div
               key={point.id}
               onClick={() => setSelectedPoint(point)} // クリックでstateを変化
-              style={{
-                padding: "12px",
-                backgroundColor: "#fff",
-                cursor: "pointer",
-                borderBottom: "solid 1px rgba(0, 0, 0, 0.2)",
-              }}
+              className="cursor-pointer border-b border-black/20 bg-white p-3"
             >
-              <div style={{ fontSize: "0.9rem", fontWeight: "bold" }}>
-                {point.name}
-              </div>
-              <div
-                style={{ fontSize: "0.75rem", color: "#888", marginTop: "4px" }}
-              >
+              <div className="text-sm font-bold">{point.name}</div>
+              <div className="mt-1 text-xs text-gray-500">
                 {point.description.substring(0, 30)}...
               </div>
             </div>
@@ -202,7 +165,7 @@ export default function Map() {
       <MapContainer
         center={[35.6812, 139.7671]}
         zoom={13}
-        style={{ height: "100vh", width: "100%" }} // *高さを指定すること!
+        className="z-0 h-full min-h-0 min-w-0 flex-1"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.carto.com/attributions">CARTO</a>'
@@ -227,39 +190,15 @@ export default function Map() {
           >
             <Popup>
               <div>
-                <strong
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                  }}
-                >
-                  {point.name}
-                </strong>
+                <strong className="text-base font-bold">{point.name}</strong>
                 <p>{point.description}</p>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                    marginTop: "12px",
-                  }}
-                >
+                <div className="mt-3 flex flex-col gap-2">
                   {/* Googleマップボタン */}
                   <a
                     href={`https://www.google.com/maps/search/?api=1&query=${point.pos[0]},${point.pos[1]}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{
-                      display: "block",
-                      backgroundColor: "#4285F4",
-                      color: "white",
-                      textAlign: "center",
-                      padding: "8px",
-                      borderRadius: "4px",
-                      textDecoration: "none",
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                    }}
+                    className={popupLinkPrimaryClass}
                   >
                     GoogleMapで確認
                   </a>
@@ -268,17 +207,7 @@ export default function Map() {
                     href={point.articleUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{
-                      display: "block",
-                      backgroundColor: "#34A853",
-                      color: "white",
-                      textAlign: "center",
-                      padding: "8px",
-                      borderRadius: "4px",
-                      textDecoration: "none",
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                    }}
+                    className={popupLinkSecondaryClass}
                   >
                     解説記事を見る
                   </a>
