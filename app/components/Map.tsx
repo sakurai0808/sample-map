@@ -102,6 +102,8 @@ export default function Map() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   // 「現在選択されている地点」をuseStateで管理する
   const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null);
+  // リスト表示シートの開閉を管理する
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   // フィルタリングされた地点データを作成する
   const filteredPoints = activeCategory
@@ -109,56 +111,132 @@ export default function Map() {
     : points;
 
   return (
-    <div className="flex h-screen w-full">
-      {/* フィルターボタン、コンテンツを一覧表示するサイドバー */}
-      <div className="flex h-full w-[400px] shrink-0 flex-col overflow-y-auto bg-gray-50">
-        {/* フィルターボタンのエリア */}
-        <div>
-          <p>カテゴリ検索</p>
-          <div className="flex flex-wrap gap-4">
-            {/* 「すべて」ボタン */}
+    <div className="relative flex h-screen w-full flex-col md:flex-row overflow-hidden">
+      {/* フィルターバー */}
+      <div className="md:hidden sticky top-0 z-[1001] w-full bg-white/80 overflow-x-auto">
+        <div className="flex gap-2 min-w-max px-2">
+          {/* 「すべて」ボタン */}
+          <button
+            onClick={() => setActiveCategory(null)}
+            className={filterButtonClass}
+          >
+            すべて
+          </button>
+          {/* カテゴリごとのボタン */}
+          {Object.keys(category_config)
+            .filter((key) => key !== "default") // デフォルトはボタンから除外
+            .map(
+              (
+                cat, //「cat」は配列から取り出すそれぞれを示す
+              ) => (
+                <button
+                  type="button"
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={filterButtonClass}
+                >
+                  {category_config[cat].label}
+                </button>
+              ),
+            )}
+        </div>
+      </div>
+
+      {/* リスト表示シート(サイドバー、ボトムシート) */}
+      <div
+        className={`
+          bg-gray-50 z-[1000] transition-all duration-300 ease-in-out shrink-0
+          md:relative md:h-full md:w-[400px] md:flex md:flex-col
+          fixed inset-x-0 bottom-0 flex flex-col rounded-t-2xl shadow-[0_-5px_15px_rgba(0,0,0,0.1)]
+          ${isSheetOpen ? "h-[60vh]" : "h-[60px] md:h-full"}
+        `}
+      >
+        {/* リスト表示シートのタイトル */}
+        <div
+          className="flex items-center justify-between px-4 py-4 cursor-pointer md:cursor-default border-b border-gray-200 bg-white rounded-t-2xl md:rounded-none"
+          onClick={() => setIsSheetOpen((prev) => !prev)}
+        >
+          <p className="font-bold text-gray-700">
+            {activeCategory
+              ? category_config[activeCategory].label
+              : "タクマップリスト"}
+            <span className="ml-2 text-xs font-normal text-gray-500">
+              ({filteredPoints.length}件)
+            </span>
+          </p>
+          <div className="md:hidden text-xs text-gray-400">
+            {isSheetOpen ? "CLOSE ▼" : "OPEN ▲"}
+          </div>
+        </div>
+        {/* フィルターエリア */}
+        <div
+          className={`p-4 bg-white border-b border-gray-100 ${
+            isSheetOpen ? "block" : "hidden md:block"
+          }`}
+        >
+          <p className="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">
+            カテゴリ検索
+          </p>
+          <div className="flex flex-wrap gap-2">
             <button
-              type="button"
               onClick={() => setActiveCategory(null)}
-              className={filterButtonClass}
+              className={`${filterButtonClass} ${
+                activeCategory === null
+                  ? "bg-gray-800 text-white border-gray-800"
+                  : "bg-white text-gray-600"
+              }`}
             >
               すべて
             </button>
-            {/* カテゴリごとのボタン */}
             {Object.keys(category_config)
-              .filter((key) => key !== "default") // デフォルトはボタンから除外
-              .map(
-                (
-                  cat, //「cat」は配列から取り出すそれぞれを示す
-                ) => (
-                  <button
-                    type="button"
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={filterButtonClass}
-                  >
-                    {category_config[cat].label}
-                  </button>
-                ),
-              )}
+              .filter((key) => key !== "default")
+              .map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`${filterButtonClass} ${
+                    activeCategory === cat
+                      ? "text-white border-transparent"
+                      : "bg-white text-gray-600"
+                  }`}
+                  // 選択されている時だけ、configで設定した背景色を適用する
+                  style={{
+                    backgroundColor:
+                      activeCategory === cat
+                        ? category_config[cat].pinBgClass.match(/#\w+/)?.[0]
+                        : "",
+                  }}
+                >
+                  {category_config[cat].label}
+                </button>
+              ))}
           </div>
         </div>
-
-        {/* リスト表示 */}
-        <p>タクマップリスト</p>
-        <div>
-          {filteredPoints.map((point) => (
-            <div
-              key={point.id}
-              onClick={() => setSelectedPoint(point)} // クリックでstateを変化
-              className="cursor-pointer border-b border-black/20 bg-white p-3"
-            >
-              <div className="text-sm font-bold">{point.name}</div>
-              <div className="mt-1 text-xs text-gray-500">
-                {point.description.substring(0, 30)}...
+        {/* リスト一覧 */}
+        <div
+          className={`flex-1 overflow-y-auto ${
+            isSheetOpen ? "block" : "hidden md:block"
+          }`}
+        >
+          <div className="divide-y divide-gray-100">
+            {filteredPoints.map((point) => (
+              <div
+                key={point.id}
+                onClick={() => {
+                  setSelectedPoint(point);
+                  if (isSheetOpen) setIsSheetOpen(false); // 地点を選んだらシートを閉じる
+                }}
+                className="cursor-pointer border-b border-black/5 bg-white p-4 hover:bg-gray-50"
+              >
+                <div className="text-sm font-bold text-gray-800">
+                  {point.name}
+                </div>
+                <div className="mt-1 text-xs text-gray-500 line-clamp-2">
+                  {point.description}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
