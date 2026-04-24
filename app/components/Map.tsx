@@ -186,7 +186,7 @@ export default function Map() {
         {/* リスト表示シート内のカテゴリフィルターエリア */}
         <div
           className={`p-4 bg-white border-b border-gray-100 ${
-            isSheetOpen ? "hidden" : "md:none"
+            isSheetOpen ? "hidden" : "md:block"
           }`}
         >
           <p className="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">
