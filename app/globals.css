@@ -5,3 +5,12 @@
   background: none;
   border: none;
 }
+
+/* ポップアップのリンクの専用クラス */
+
+.leaflet-container a.gm-btn {
+  color: #fff;
+}
+.leaflet-container a.article-btn {
+  color: #fff;
+}

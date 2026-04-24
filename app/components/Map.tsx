@@ -198,7 +198,7 @@ export default function Map() {
                     href={`https://www.google.com/maps/search/?api=1&query=${point.pos[0]},${point.pos[1]}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={popupLinkPrimaryClass}
+                    className={`${popupLinkPrimaryClass} gm-btn`}
                   >
                     GoogleMapで確認
                   </a>
@@ -207,7 +207,7 @@ export default function Map() {
                     href={point.articleUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={popupLinkSecondaryClass}
+                    className={`${popupLinkSecondaryClass} article-btn`}
                   >
                     解説記事を見る
                   </a>
