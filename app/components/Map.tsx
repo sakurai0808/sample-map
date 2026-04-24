@@ -92,7 +92,7 @@ const createCustomIcon = (name: string, category: string) => {
 
 // 地図を動かすためのサブのコンポーネント
 function ChangeView({ center }: { center: [number, number] }) {
-  const map = useMap();
+  const map = useMap(); // Leafletの関数
   map.setView(center, 15, { animate: true }); // 指定した座標へ移動する
   return null; // 何らかの描画は不必要
 }
@@ -118,7 +118,12 @@ export default function Map() {
           {/* 「すべて」ボタン */}
           <button
             onClick={() => setActiveCategory(null)}
-            className={filterButtonClass}
+            className={`${filterButtonClass} ${
+              // 「すべて」かそれ以外のカテゴリが選ばれているかで表示を変更する
+              activeCategory === null
+                ? "bg-gray-800 text-white border-gray-800"
+                : "bg-white text-gray-600"
+            }`}
           >
             すべて
           </button>
@@ -130,10 +135,20 @@ export default function Map() {
                 cat, //「cat」は配列から取り出すそれぞれを示す
               ) => (
                 <button
-                  type="button"
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={filterButtonClass}
+                  className={`${filterButtonClass} ${
+                    activeCategory === cat
+                      ? "text-white border-transparent"
+                      : "bg-white text-gray-600"
+                  }`}
+                  // 選択されている時だけ、configで設定した背景色を適用する
+                  style={{
+                    backgroundColor:
+                      activeCategory === cat
+                        ? category_config[cat].pinBgClass.match(/#\w+/)?.[0]
+                        : "",
+                  }}
                 >
                   {category_config[cat].label}
                 </button>
@@ -181,6 +196,7 @@ export default function Map() {
             <button
               onClick={() => setActiveCategory(null)}
               className={`${filterButtonClass} ${
+                // 「すべて」かそれ以外のカテゴリが選ばれているかで表示を変更する
                 activeCategory === null
                   ? "bg-gray-800 text-white border-gray-800"
                   : "bg-white text-gray-600"
