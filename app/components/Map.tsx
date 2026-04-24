@@ -145,6 +145,7 @@ export default function Map() {
         </div>
 
         {/* リスト表示 */}
+        <p>タクマップリスト</p>
         <div>
           {filteredPoints.map((point) => (
             <div
