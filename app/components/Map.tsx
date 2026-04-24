@@ -174,7 +174,7 @@ export default function Map() {
           <p className="font-bold text-gray-700">
             {activeCategory
               ? category_config[activeCategory].label
-              : "タクマップリスト"}
+              : "タクマップ掲載リスト"}
             <span className="ml-2 text-xs font-normal text-gray-500">
               ({filteredPoints.length}件)
             </span>
@@ -183,10 +183,10 @@ export default function Map() {
             {isSheetOpen ? "CLOSE ▼" : "OPEN ▲"}
           </div>
         </div>
-        {/* フィルターエリア */}
+        {/* リスト表示シート内のカテゴリフィルターエリア */}
         <div
           className={`p-4 bg-white border-b border-gray-100 ${
-            isSheetOpen ? "block" : "hidden md:block"
+            isSheetOpen ? "hidden" : "md:none"
           }`}
         >
           <p className="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">
