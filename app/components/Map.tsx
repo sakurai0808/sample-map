@@ -3,13 +3,18 @@
 "use client"; // ブラウザのみで動かす
 
 import { useState } from "react";
-import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
 
+import MarkerClusterGroup from "react-leaflet-cluster";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
+
 // FontAwesomeの読み込み
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
@@ -258,6 +263,7 @@ export default function Map() {
         zoom={13}
         className="z-0 h-full min-h-0 min-w-0 flex-1"
       >
+        {/* タイルの設定 */}
         <TileLayer
           attribution='&copy; <a href="https://www.carto.com/attributions">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" // ベースマップ「voyager」
@@ -266,47 +272,52 @@ export default function Map() {
         {/* 地点を選択した場合、ズームして移動させる */}
         {selectedPoint && <ChangeView center={selectedPoint.pos} />}
 
-        {filteredPoints.map((point) => (
-          <Marker
-            key={point.id}
-            position={point.pos}
-            icon={createCustomIcon(point.name, point.category)}
-            // eventHandlersを使い、リストから選ばれた場合にポップアップを表示
-            ref={(ref) => {
-              // refには、Leafletのマーカーオブジェクトそのものが入る
-              if (selectedPoint?.id === point.id && ref) {
-                ref.openPopup(); // openPopupはピンのメソッド
-              }
-            }}
-          >
-            <Popup>
-              <div>
-                <strong className="text-base font-bold">{point.name}</strong>
-                <p>{point.description}</p>
-                <div className="mt-3 flex flex-col gap-2">
-                  {/* Googleマップボタン */}
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${point.pos[0]},${point.pos[1]}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`${popupLinkPrimaryClass} gm-btn`}
-                  >
-                    GoogleMapで確認
-                  </a>
-                  {/* 記事リンクボタン */}
-                  <a
-                    href={point.articleUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`${popupLinkSecondaryClass} article-btn`}
-                  >
-                    解説記事を見る
-                  </a>
+        <MarkerClusterGroup
+          chunkedLoading // 大量のデータでも滑らかにする(trueとみなされている)
+          maxClusterRadius={60}
+        >
+          {filteredPoints.map((point) => (
+            <Marker
+              key={point.id}
+              position={point.pos}
+              icon={createCustomIcon(point.name, point.category)}
+              // eventHandlersを使い、リストから選ばれた場合にポップアップを表示
+              ref={(ref) => {
+                // refには、Leafletのマーカーオブジェクトそのものが入る
+                if (selectedPoint?.id === point.id && ref) {
+                  ref.openPopup(); // openPopupはピンのメソッド
+                }
+              }}
+            >
+              <Popup>
+                <div>
+                  <strong className="text-base font-bold">{point.name}</strong>
+                  <p>{point.description}</p>
+                  <div className="mt-3 flex flex-col gap-2">
+                    {/* Googleマップボタン */}
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${point.pos[0]},${point.pos[1]}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`${popupLinkPrimaryClass} gm-btn`}
+                    >
+                      GoogleMapで確認
+                    </a>
+                    {/* 記事リンクボタン */}
+                    <a
+                      href={point.articleUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`${popupLinkSecondaryClass} article-btn`}
+                    >
+                      解説記事を見る
+                    </a>
+                  </div>
                 </div>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+              </Popup>
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
       </MapContainer>
     </div>
   );
