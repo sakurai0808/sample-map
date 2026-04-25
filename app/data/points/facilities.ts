@@ -4,7 +4,7 @@ import { Point } from "@/app/types";
 
 export const facilities: Point[] = [
   {
-    id: 1,
+    id: "facility-1",
     name: "キャピトルホテル東急",
     pos: [35.673960049945066, 139.74077728841004] as [number, number],
     category: "facility",
@@ -12,7 +12,7 @@ export const facilities: Point[] = [
     articleUrl: "https://tokyotaximap.com/the-capitol-hotel-tokyu/",
   },
   {
-    id: 2,
+    id: "facility-2",
     name: "グランドハイアット東京",
     pos: [35.660077672488136, 139.72831006623068] as [number, number],
     category: "facility",
@@ -21,7 +21,7 @@ export const facilities: Point[] = [
     articleUrl: "https://tokyotaximap.com/grandhyatt-tokyo/",
   },
   {
-    id: 3,
+    id: "facility-3",
     name: "渋谷エクセルホテル東急",
     pos: [35.65858274942378, 139.69983037224398] as [number, number],
     category: "facility",
@@ -30,7 +30,7 @@ export const facilities: Point[] = [
     articleUrl: "https://tokyotaximap.com/shibuya-excelhoteltokyu/",
   },
   {
-    id: 4,
+    id: "facility-4",
     name: "東京プリンスホテル",
     pos: [35.65894453810081, 139.74811763739464] as [number, number],
     category: "facility",
@@ -39,7 +39,7 @@ export const facilities: Point[] = [
     articleUrl: "",
   },
   {
-    id: 5,
+    id: "facility-5",
     name: "パークハイアット東京",
     category: "facility",
     pos: [35.68618692982386, 139.69047206623225] as [number, number],
