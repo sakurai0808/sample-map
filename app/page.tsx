@@ -15,7 +15,7 @@ const Map = dynamic(() => import("./components/Map"), {
 export default function Home() {
   return (
     <main className="p-5">
-      <h1>タクシー運転手向けマップ(テスト)</h1>
+      <h1>タクシー運転手向けピンマップ(テスト)</h1>
       <div className="mt-5 border border-gray-300">
         <Map /> {/* 地図のコンポーネント */}
       </div>

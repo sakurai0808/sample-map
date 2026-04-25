@@ -146,7 +146,7 @@ export default function Map() {
                   style={{
                     backgroundColor:
                       activeCategory === cat
-                        ? category_config[cat].pinBgClass.match(/#\w+/)?.[0]
+                        ? category_config[cat].pinBgClass.match(/#\w+/)?.[0] // 正規表現でカラーコードを抜き出す
                         : "",
                   }}
                 >
