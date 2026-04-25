@@ -10,6 +10,8 @@ import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import MarkerClusterGroup from "react-leaflet-cluster";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 
 // FontAwesomeの読み込み
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
