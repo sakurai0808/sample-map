@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: "タクシー運転手向けピンマップ(テスト)",
   description:
     "「東京都心マップ」で解説されているコンテンツを地図で一覧できます。",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
