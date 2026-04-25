@@ -25,9 +25,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 // データのインポート
-import { points } from "./points";
+import { allPoints } from "../data/points";
 
-type MapPoint = (typeof points)[number];
+type MapPoint = (typeof allPoints)[number];
 
 // カテゴリごとに見た目を設定する(辞書型で定義する)
 const category_config: {
@@ -112,8 +112,8 @@ export default function Map() {
 
   // フィルタリングされた地点データを作成する
   const filteredPoints = activeCategory
-    ? points.filter((p) => p.category === activeCategory)
-    : points;
+    ? allPoints.filter((p) => p.category === activeCategory)
+    : allPoints;
 
   return (
     <div className="relative flex h-screen w-full flex-col md:flex-row overflow-hidden">
